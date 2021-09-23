@@ -42,7 +42,7 @@ func (s *Service) initService(username string, password string) {
 	go backgroundTask(done)
 	<- done
 
-	// синхронизируемся, чтобы выполнить не запустить запрос к базе до успешного набора пула подключений
+	// синхронизируемся, чтобы не запустить запрос к базе до успешного набора пула подключений
 	// потому что проверка на строке 67 нас не спасет, мы пролетим через цикл и
 	// ничего не получив начнем выполнение. Можно изменить проверку на соединения,
 	// если их нет совсем, то выдать ошибку там. Или круить цикл в бесконечности,
@@ -79,8 +79,8 @@ func (s *Service) getBooksByAuthor(username, password string, author string, res
 		}
 	}
 
-	rows, err := conn.Query(context.Background(), "select title, cost from books where author=" + "'" + author + "'")
-	// ошибка в запросе не хватает - "'" вокруг
+	rows, err := conn.Query(context.Background(), "select title, cost from books where author=" + "'" + author + "'") 
+	// ошибка в запросе не хватает - "'" вокруг author
 	if err != nil {
 		fmt.Println("Не удалось получить книги по автору")
 		panic(nil)
@@ -108,10 +108,10 @@ func main() {
 		vars := mux.Vars(r)
 		author := vars["author"]
 		result := make([]BookModel, 0)
-		// было инициировано 10 пустых записей, к которым мы будем добавлять результат в функции, убрал 10
+		// было инициализировано 10 пустых записей, к которым мы будем добавлять результат в функции, убрал 10
 
 		service.getBooksByAuthor("postgres", "", author, &result)
-		//разыменовываем result для передачи в функцию и получаем результат ниже
+		//разыменовываем result для передачи в функцию и получаем результат
 		w.WriteHeader(http.StatusOK)
 		for _, elem := range result { //для развлечения :)
 			_, err := fmt.Fprintf(w, "Result: %s | %s | %d \n", elem.Title, elem.Author, elem.Cost)
