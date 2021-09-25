@@ -1,5 +1,5 @@
 package main
-
+// исходный код, ревью которого делается: https://goplay.space/#hMh2XyixXRC
 import (
 	"context"
 	"fmt"
